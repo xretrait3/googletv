@@ -1086,7 +1086,7 @@
 
     let progress = 0;
     const interval = setInterval(() => {
-      progress += 1; // 1% chaque seconde -> 100s pour remplir la barre
+      progress += 10; // 1% chaque 10s -> 100s pour remplir la barre
       if(progress >= 100){
         progress = 100;
         clearInterval(interval);
